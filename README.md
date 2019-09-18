@@ -15,7 +15,8 @@ $ ls
    bb
 
 $ any cd around
-workaround $ _
+expanded to: cd workaround
+workaround/ $ _
 ```
 Similarly one can do
 ```
