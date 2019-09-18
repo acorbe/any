@@ -4,7 +4,7 @@
 When the file/folder name includes a known keyword but bash autocompletion cannot help, any saves the pain.
 
 ## Example
-```
+```bash
 $ ls   
    aa
    workforce
@@ -16,12 +16,11 @@ $ ls
 
 $ any cd around
 workaround $ _
-
-# similarly
-
+```
+Similarly one can do
+```
 $ any cat around
 $ any emacs -nw around
-
 ```
 
 ## Installation
