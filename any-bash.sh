@@ -1,6 +1,6 @@
 
 if [ "$ANY_ALIAS_CD" = true ]; then
-   alias acd='any cd'
+   alias ad='any cd'
 fi
 
 # any will try the default behavior for these commands before trying its expansion.
