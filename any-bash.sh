@@ -1,4 +1,7 @@
 
+if [ "$ANY_ALIAS_CD" = true ]; then
+   alias acd='any cd'
+fi
 
 function any (){
     for arg__ in $@; do :; done #only portable way
