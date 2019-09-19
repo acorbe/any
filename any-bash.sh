@@ -44,7 +44,7 @@ function any (){
     array=()
     while IFS=  read -r -d $'\0'; do
 	array+=("$REPLY")
-    done < <(find . -maxdepth 1 -name "*$target_pattern*" -print0)
+    done < <(find . -maxdepth 1 -iname "*$target_pattern*" -print0)
 
     array_length=${#array[@]}
 
