@@ -28,3 +28,5 @@ $ any emacs -nw around
 + `git clone git@github.com:acorbe/any.git`
 + Add `source <path-to>/any/any-bash.sh` into your `~/.bashrc` (for standard linux)  or `~/.bash_profile` (for macos). 
 
+## Aliases
++ `any cd` is now aliased to `ad` by setting `ANY_ALIAS_CD=true` in your `.bashrc`
