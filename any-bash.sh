@@ -60,7 +60,7 @@ function any (){
 	    ;;
 	*)
 	    echo -e "multiple matches:"
-	    echo -e "${array[*]}"
+	    # echo -e "${array[*]}"
 	    select option_ in "${array[@]}" #aa bb
 	    do
 		target_file=$option_
