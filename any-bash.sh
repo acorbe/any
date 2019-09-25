@@ -63,9 +63,14 @@ function any (){
 	    # echo -e "${array[*]}"
 	    select option_ in "${array[@]}" #aa bb
 	    do
-		target_file=$option_
-		echo -e "expanded to: \e[34m${@:1:$#-1} $target_file\033[0m"
-		eval ${@:1:$#-1} $target_file
+		if [ -z "$option_" ]
+		then
+		    echo -e "\e[31mSelection error. No expansion.\033[0m"
+		else
+		    target_file=$option_
+		    echo -e "expanded to: \e[34m${@:1:$#-1} $target_file\033[0m"
+		    eval ${@:1:$#-1} $target_file
+		fi
 		break;		
 	    done
     esac
