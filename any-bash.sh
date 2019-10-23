@@ -43,8 +43,8 @@ function any (){
     # https://stackoverflow.com/q/23356779/1714661
     array=()
     while IFS=  read -r -d $'\0'; do
-	array+=("$REPLY")
-    done < <(find . -maxdepth 1 -iname "*$target_pattern*" -print0)
+	array+=("${REPLY}")
+    done < <(find . -maxdepth 1 -iname "*$target_pattern*" -print0 -exec echo '{}' +) # 
 
     array_length=${#array[@]}
 
@@ -55,8 +55,8 @@ function any (){
 	    ;;
 	1)
 	    target_file=${array[0]}
-	    echo -e "expanded to: \e[34m${@:1:$#-1} $target_file\033[0m"    
-	    eval ${@:1:$#-1} $target_file 
+	    echo -e "expanded to: \e[34m${@:1:$#-1} ${target_file}\033[0m"    
+	    eval ${@:1:$#-1} "${target_file// /\\ }"
 	    ;;
 	*)
 	    echo -e "multiple matches:"
@@ -69,7 +69,7 @@ function any (){
 		else
 		    target_file=$option_
 		    echo -e "expanded to: \e[34m${@:1:$#-1} $target_file\033[0m"
-		    eval ${@:1:$#-1} $target_file
+		    eval ${@:1:$#-1} "${target_file// /\\ }" 
 		fi
 		break;		
 	    done
