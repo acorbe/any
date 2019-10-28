@@ -1,3 +1,10 @@
+# This file is part of any which is released under MIT License.
+# See file LICENSE or go to
+#  https://github.com/acorbe/any/blob/master/LICENSE
+# for full license details.
+# Any is authored and maintained by Alessandro Corbetta.
+# Copyright (c) 2019 Alessandro Corbetta
+
 
 if [ "$ANY_ALIAS_CD" = true ]; then
    alias ad='any cd'
