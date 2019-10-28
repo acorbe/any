@@ -17,16 +17,20 @@ ANY_COMMANDS_FOR_FILE_ONLY_SEARCH="^(cat|less|more)$"
 ANY_COMMANDS_FOR_DIR_ONLY_SEARCH="^(cd|cd)$"
 
 function any_find_command(){
+    ## results are presented in reverse cronological order
+    ## see https://superuser.com/a/608889/164234
     target_pattern=$1
     any_find_type_restrict=$2
     find . -maxdepth 1 \
 	 -iname "*$target_pattern*" \
 	 $any_find_type_restrict \
-	 -print0 -exec echo '{}' +
+         -printf '%Ts\t%p\0' | sort -nrz | cut -f2 -z #| xargs -0 ls
+         #-print0 -exec echo '{}' +\
+    
 }
 
 function any (){
-    for arg__ in $@; do :; done #only portable way
+    for arg__ in $@; do :; done #only portable way to transfer the array
     target_pattern=$arg__
 
     command_=$1
