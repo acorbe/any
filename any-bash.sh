@@ -82,7 +82,7 @@ function any (){
     while IFS=  read -r -d $'\0'; do
 	array+=("${REPLY}")
 	# done < <(find . -maxdepth 1 -iname "*$target_pattern*" $any_find_type_restrict -print0 -exec echo '{}' +) #
-    done < <(any_find_command "$target_pattern" "$any_find_type_restrict")
+    done < <(any_find_command "${target_pattern//\//*\/*}" "$any_find_type_restrict")
 
     array_length=${#array[@]}
 
