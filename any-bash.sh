@@ -13,6 +13,17 @@ fi
 # any will try the default behavior for these commands before trying its expansion.
 ANY_TEST_DEFAULT_BEHAVIOR_FIST="^(cd|ls|cat|less|more)$"
 
+ANY_COMMANDS_FOR_FILE_ONLY_SEARCH="^(cat|less|more)$"
+ANY_COMMANDS_FOR_DIR_ONLY_SEARCH="^(cd|cd)$"
+
+function any_find_command(){
+    target_pattern=$1
+    any_find_type_restrict=$2
+    find . -maxdepth 1 \
+	 -iname "*$target_pattern*" \
+	 $any_find_type_restrict \
+	 -print0 -exec echo '{}' +
+}
 
 function any (){
     for arg__ in $@; do :; done #only portable way
@@ -26,7 +37,7 @@ function any (){
     
     if [[ "$command_" =~ $ANY_TEST_DEFAULT_BEHAVIOR_FIST ]]; then
 	if [[ "$ANY_DEBUG" == true ]]; then
-	    echo "matching! - trying:" ${@:1}
+	    echo "cd in ANY_TEST_DEFAULT_BEHAVIOR_FIST. testing:" ${@:1}
 	fi
 
 	#test_def_beh=$(eval ${@:1}) #2> /dev/null
@@ -41,9 +52,24 @@ function any (){
 	    return 0
 	else
 	    if [[ "$ANY_DEBUG" == true ]]; then
-		echo "rerouting behavior"
+		echo "default_behavior failed. Rerouting to any."
 	    fi
 	fi
+    fi
+
+    any_find_type_restrict=""
+    if [[ "$command_" =~ $ANY_COMMANDS_FOR_DIR_ONLY_SEARCH ]]; then
+	any_find_type_restrict="-type d"
+    elif [[ "$command_" =~ $ANY_COMMANDS_FOR_FILE_ONLY_SEARCH ]]
+    then
+	any_find_type_restrict="-type f"
+    else
+	if [[ "$ANY_DEBUG" == true ]]; then
+	    echo "command: $command_ does not match dir-only or file-only searches."
+	fi
+    fi
+    if [[ "$ANY_DEBUG" == true ]]; then
+	echo "any_find_type_restrict: " $any_find_type_restrict
     fi
     
 
@@ -51,7 +77,8 @@ function any (){
     array=()
     while IFS=  read -r -d $'\0'; do
 	array+=("${REPLY}")
-    done < <(find . -maxdepth 1 -iname "*$target_pattern*" -print0 -exec echo '{}' +) # 
+	# done < <(find . -maxdepth 1 -iname "*$target_pattern*" $any_find_type_restrict -print0 -exec echo '{}' +) #
+    done < <(any_find_command "$target_pattern" "$any_find_type_restrict")
 
     array_length=${#array[@]}
 
