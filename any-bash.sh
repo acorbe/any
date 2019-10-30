@@ -16,16 +16,23 @@ ANY_TEST_DEFAULT_BEHAVIOR_FIST="^(cd|ls|cat|less|more)$"
 ANY_COMMANDS_FOR_FILE_ONLY_SEARCH="^(cat|less|more)$"
 ANY_COMMANDS_FOR_DIR_ONLY_SEARCH="^(cd|cd)$"
 
+ANY_ARCHITECTURE_FOR_FIND_COMMAND=`uname`
+
 function any_find_command(){
     ## results are presented in reverse cronological order
     ## see https://superuser.com/a/608889/164234
     target_pattern=$1
     any_find_type_restrict=$2
-    find . -maxdepth 1 \
-	 -iname "*$target_pattern*" \
-	 $any_find_type_restrict \
-         -printf '%Ts\t%p\0' | sort -nrz | cut -f2 -z #| xargs -0 ls
-         #-print0 -exec echo '{}' +\
+
+    if [[ "$ANY_ARCHITECTURE_FOR_FIND_COMMAND" == "Darwin" ]]; then
+	find . -maxdepth 1 -iname "*$target_pattern*" -print0 -exec echo '{}' +
+    else    
+	find . -maxdepth 1 \
+	     -iname "*$target_pattern*" \
+	     $any_find_type_restrict \
+             -printf '%Ts\t%p\0' | sort -nrz | cut -f2 -z #| xargs -0 ls
+        #-print0 -exec echo '{}' +\
+    fi
     
 }
 
