@@ -31,10 +31,50 @@ function any_find_command () {
 	     -iname "*$target_pattern*" \
 	     $any_find_type_restrict \
              -printf '%Ts\t%p\0' | sort -nrz | cut -f2 -z #| xargs -0 ls
-        #-print0 -exec echo '{}' +\
+        
     fi
     
 }
+
+function any_find_command_experimental () {
+    target_pattern=$1
+    any_find_type_restrict=$2
+
+    ## correct maxdepth
+    
+    ## -path <low folder
+    ## \( -and \)
+
+    ## first we determine whether the string needs to be split
+    #if [[ ".*/.*" ~= $ ]]
+
+    #array=()
+    #while IFS=  read -r -d "/"; do
+   # 	echo "${REPLY}"
+   #	array+=("${REPLY}")
+   # 	# done < <(find . -maxdepth 1 -iname "*$target_pattern*" $any_find_type_restrict -print0 -exec echo '{}' +) #
+    #done < $1
+
+    ## quantifies the number of arguments
+    target_max_d=`python -c "print(len(\"$target_pattern\".split(\"/\")))"`
+    target_max_path=`python -c "print(   \"/\".join(  map(lambda x : \"*\" + x + \"*\",   \"$target_pattern\".split(\"/\")[:-1]  )  )       )"`
+
+    echo $target_max_d
+    echo $target_max_path
+
+    
+    #find which comes with macos has different flags and less opts.
+    if [[ "$ANY_ARCHITECTURE_FOR_FIND_COMMAND" == "Darwin" ]]; then
+	find . -maxdepth 1 -iname "*$target_pattern*" -print0 -exec echo '{}' +
+    else    
+	find . -maxdepth 1 \
+	     $any_find_type_restrict \
+	     -iname "*$target_pattern*" \
+             -printf '%Ts\t%p\0' | sort -nrz | cut -f2 -z #| xargs -0 ls
+        
+    fi
+}
+
 
 function any (){
 
