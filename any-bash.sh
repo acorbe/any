@@ -25,7 +25,9 @@ function any_find_command () {
 
     #find which comes with macos has different flags and less opts.
     if [[ "$ANY_ARCHITECTURE_FOR_FIND_COMMAND" == "Darwin" ]]; then
-	find . -maxdepth 1 -iname "*$target_pattern*" -print0 -exec echo '{}' +
+	find . -maxdepth 1 $any_find_type_restrict \
+	     -iname "*$target_pattern*"\
+	     -print0 -exec echo '{}' +
     else    
 	find . -maxdepth 1 \
 	     -iname "*$target_pattern*" \
@@ -56,22 +58,45 @@ function any_find_command_experimental () {
     #done < $1
 
     ## quantifies the number of arguments
-    target_max_d=`python -c "print(len(\"$target_pattern\".split(\"/\")))"`
-    target_max_path=`python -c "print(   \"/\".join(  map(lambda x : \"*\" + x + \"*\",   \"$target_pattern\".split(\"/\")[:-1]  )  )       )"`
+    # target_max_d=`python -c "print(len(\"$target_pattern\".split(\"/\")))"`
+    # target_max_path=`python -c "print(   \"/\".join(  map(lambda x : \"*\" + x + \"*\",   \"$target_pattern\".split(\"/\")[:-1]  )  )       )"`
 
-    echo $target_max_d
-    echo $target_max_path
+    # echo $target_max_d
+    # echo $target_max_path
+
+    if [[ "$ANY_DEBUG" == true ]]; then
+	echo "Notice - this is the experimental any find call."
+    fi
+
+
+    #check if it's a path with / in between.
+    echo "Defining wheter the path contains at least one '/'"
+    if [[ "${target_pattern}" =~ "/" ]]; then
+	if [[ "$ANY_DEBUG" == true ]]; then
+	    echo "Detected / in path. Any searches in composed paths."
+	fi
+	IFS='/' array=($target_pattern)
+	echo ${array}
 
     
-    #find which comes with macos has different flags and less opts.
-    if [[ "$ANY_ARCHITECTURE_FOR_FIND_COMMAND" == "Darwin" ]]; then
-	find . -maxdepth 1 -iname "*$target_pattern*" -print0 -exec echo '{}' +
-    else    
-	find . -maxdepth 1 \
-	     $any_find_type_restrict \
-	     -iname "*$target_pattern*" \
-             -printf '%Ts\t%p\0' | sort -nrz | cut -f2 -z #| xargs -0 ls
-        
+    else
+	
+	if [[ "$ANY_DEBUG" == true ]]; then
+	    echo "NOT Detected / in path. Any searches in composed paths."
+	fi	
+	
+	#find which comes with macos has different flags and less opts.
+	if [[ "$ANY_ARCHITECTURE_FOR_FIND_COMMAND" == "Darwin" ]]; then
+	    find . -maxdepth 1 $any_find_type_restrict\
+		 -iname "*$target_pattern*" \
+		  -print0 -exec echo '{}' +
+	else    
+	    find . -maxdepth 1 \
+		 $any_find_type_restrict \
+		 -iname "*$target_pattern*" \
+		 -printf '%Ts\t%p\0' | sort -nrz | cut -f2 -z #| xargs -0 ls            
+	fi
+
     fi
 }
 
@@ -138,15 +163,31 @@ function any (){
     fi
     if [[ "$ANY_DEBUG" == true ]]; then
 	echo "any_find_type_restrict: " $any_find_type_restrict
+	echo "passing to find function:" "${target_pattern}"
     fi
-    
 
+    if [[ "$ANY_FIND_COMMAND_EXP" == true ]]; then
+	ANY_FIND_COMMAND_FOO=any_find_command_experimental
+	if [[ "$ANY_DEBUG" == true ]]; then
+	    echo "any in experimental foo mode"
+	fi
+	
+	echo "DUPLICATED CALL"
+	$ANY_FIND_COMMAND_FOO "${target_pattern}" "$any_find_type_restrict"
+	echo "END DUPLICATED CALL"
+	
+    else
+	ANY_FIND_COMMAND_FOO=any_find_command
+    fi
+
+    
+       
     # https://stackoverflow.com/q/23356779/1714661
     array=()
     while IFS=  read -r -d $'\0'; do
 	array+=("${REPLY}")
 	# done < <(find . -maxdepth 1 -iname "*$target_pattern*" $any_find_type_restrict -print0 -exec echo '{}' +) #
-    done < <(any_find_command "${target_pattern//\//*\/*}" "$any_find_type_restrict")
+    done < <($ANY_FIND_COMMAND_FOO "${target_pattern}" "$any_find_type_restrict")
 
     array_length=${#array[@]}
 
