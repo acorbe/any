@@ -30,10 +30,14 @@ $ any cat around
 $ any emacs -nw around
 ```
 
+### not unique expansion
+In case the expansion is not unique, any prompts a selection menu in reverse cronological order.
+
 ### complex folder pattern expansion (separated by `/`)
 ```bash
 $ any cat around/demo => cat workaround/my-demo
 ```
+
 
 
 ## Installation 
