@@ -12,31 +12,27 @@ When the file/folder name includes a known keyword but bash autocompletion canno
 &copy; Alessandro Corbetta 2019.
 
 ## Example
-![demo-video](/docs/any-video-3.gif)
+![demo-video](/docs/any-video-4.gif)
 
-
+### cd keyword expansion
 ```bash
 $ ls   
-   aa
-   workforce
-   workplace
-   workfloor
-   workaround
-   workout
-   bb
-
+   workplace workfloor workaround
+   
 $ any cd around
-expanded to: cd workaround
-workaround/ $ _
+    expanded to: cd workaround
+$ workaround/ _
 ```
-Similarly one can do
+
+### generic command expansion
 ```bash
 $ any cat around
 $ any emacs -nw around
 ```
-Any expands patterns nested with `/`
+
+### complex folder pattern expansion (separated by `/`)
 ```bash
-$ any cd around/demo => cd workaround/my-demo
+$ any cat around/demo => cat workaround/my-demo
 ```
 
 
