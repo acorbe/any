@@ -9,7 +9,7 @@ In case `file-keyword` allows for more than one matching, a selection menu is pr
 
 When the file/folder name includes a known keyword but bash autocompletion cannot help, any saves the pain. Any extensively uses the `find` command.
 
-&copy; Alessandro Corbetta 2019.
+&copy; Alessandro Corbetta, 2019.
 
 ## Example
 ![demo-video](/docs/any-video-4.gif)
