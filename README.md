@@ -1,4 +1,4 @@
-# any
+# any - for bash
 ```
 any <command> -flags.. file-keyword 
 
@@ -7,7 +7,7 @@ any <command> -flags.. file-keyword
 
 In case `file-keyword` allows for more than one matching, a selection menu is prompted.
 
-When the file/folder name includes a known keyword but bash autocompletion cannot help, any saves the pain.
+When the file/folder name includes a known keyword but bash autocompletion cannot help, any saves the pain. Any extensively uses the `find` command.
 
 &copy; Alessandro Corbetta 2019.
 
@@ -49,3 +49,7 @@ $ any cat around/demo => cat workaround/my-demo
 
 ## Aliases
 + `any cd` is aliased to `ad` by setting `ANY_ALIAS_CD=true` in your `.bashrc`
+
+## Supported systems
++ Extensively tested with bash on linux
++ Works on macos. Less features are supported, because of limited `find` functionalities.
