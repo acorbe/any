@@ -135,12 +135,10 @@ function any_find_command () {
 
 function any (){
 
-    #only portable way to transfer the last element of the array
-    for arg__ in $@; do :; done
+    #last argument encodes the keyword/pattern that any will try to match.
+    target_pattern=${@: -1} 
 
-    #this encodes the keyword/pattern that any will try to match
-    target_pattern=$arg__
-
+    #command that any aims at expanding.
     command_=$1
 
     if [[ "$ANY_DEBUG" == true ]]; then
