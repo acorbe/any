@@ -85,7 +85,7 @@ function any_find_command () {
 
 	if [[ "$ANY_DEBUG" == true ]]; then
 	    >&2 echo "[ANY] - updated -maxdepth" $path_len_subelements
-	    >&2 echo "[ANY] - updated -path" "${joined_patternized_path}"
+	    >&2 echo "[ANY] - updated -ipath" "${joined_patternized_path}"
 	    >&2 echo "[ANY] - updated -iname" "*${path_split[$path_len_subelements-1]}*"
 	fi	
 	
@@ -97,12 +97,12 @@ function any_find_command () {
 	else
 	    if [[ "$ANY_DEBUG" == true ]]; then
 		>&2 echo "[ANY] - FIND CALL: find "-maxdepth $path_len_subelements \
-		 \( -path "${joined_patternized_path}" \) \
+		 \( -ipath "${joined_patternized_path}" \) \
 		 -iname "*${path_split[$path_len_subelements-1]}*" \
 		 -printf '%Ts\t%p\0'
 	    fi
 	    find . -maxdepth $path_len_subelements \
-		 \( -path "${joined_patternized_path}" \) \
+		 \( -ipath "${joined_patternized_path}" \) \
 		 -iname "*${path_split[$path_len_subelements-1]}*" \
 		 -printf '%Ts\t%p\0' 2> /dev/null | sort -nrz | cut -f2 -z #| xargs -0 ls
 	         #"${any_find_type_restrict}"
@@ -156,12 +156,10 @@ function color_output_if_possible_ignore_beg () {
 
 function any (){
 
-    #only portable way to transfer the last element of the array
-    for arg__ in $@; do :; done
+    #last argument encodes the keyword/pattern that any will try to match.
+    target_pattern=${@: -1} 
 
-    #this encodes the keyword/pattern that any will try to match
-    target_pattern=$arg__
-
+    #command that any aims at expanding.
     command_=$1
 
     if [[ "$ANY_DEBUG" == true ]]; then

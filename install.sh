@@ -12,3 +12,5 @@ cat <<EOF >> ~/.bashrc
 export ANY_ALIAS_CD=true
 source $ANY_FOLDER/any-bash.sh 
 EOF
+
+echo "Done!"

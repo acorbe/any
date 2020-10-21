@@ -1,32 +1,59 @@
-# any
-`any <command> -flags keyword` expands to `<command> -flags filename-matching-keyword` if the matching is unique, otherwise provides a selection.
+# any - for bash
+```
+any <command> -flags.. file-keyword 
 
-When the file/folder name includes a known keyword but bash autocompletion cannot help, any saves the pain.
+=>  <command> -flags.. filename-matching-keyword
+```
+
+In case `file-keyword` allows for more than one matching, a selection menu is prompted.
+
+When the file/folder name includes a known keyword but bash autocompletion cannot help, any saves the pain. Any extensively uses the `find` command.
+
+&copy; Alessandro Corbetta, 2019.
 
 ## Example
+![demo-video](/docs/any-video-4.gif)
+
+### cd keyword expansion
 ```bash
 $ ls   
-   aa
-   workforce
-   workplace
-   workfloor
-   workaround
-   workout
-   bb
-
+   workplace workfloor workaround
+   
 $ any cd around
-expanded to: cd workaround
-workaround/ $ _
+    expanded to: cd workaround
+$ workaround/ _
 ```
-Similarly one can do
-```
+
+### generic command expansion
+```bash
 $ any cat around
 $ any emacs -nw around
 ```
 
-## Installation
+### not unique expansion
+In case the expansion is not unique, any prompts a selection menu in reverse cronological order.
+
+### complex folder pattern expansion (separated by `/`)
+```bash
+$ any cat around/demo => cat workaround/my-demo
+```
+
+
+
+## Installation 
+### Via script (for systems with `.bashrc`)
++ `git clone git@github.com:acorbe/any.git`
++ `cd any`
++ `./install.sh`
+
+### Explicit 
 + `git clone git@github.com:acorbe/any.git`
 + Add `source <path-to>/any/any-bash.sh` into your `~/.bashrc` (for standard linux)  or `~/.bash_profile` (for macos). 
++ (optional) `export ANY_ALIAS_CD=true`
 
 ## Aliases
-+ `any cd` is now aliased to `ad` by setting `ANY_ALIAS_CD=true` in your `.bashrc`
++ `any cd` is aliased to `ad` by setting `ANY_ALIAS_CD=true` in your `.bashrc`
+
+## Supported systems
++ Extensively tested with bash on linux
++ Works on macos. Less features are supported, because of limited `find` functionalities.
