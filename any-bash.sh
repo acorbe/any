@@ -103,7 +103,7 @@ function any_find_command () {
 	    fi
 	    find . -maxdepth $path_len_subelements \
 		 \( -path "${joined_patternized_path}" \) \
-		 -iname "*${path_split[$path_len_subelements-1]}*" \
+		 \( -iname "*${path_split[$path_len_subelements-1]}*" ! -iname "*~" \) \
 		 -printf '%Ts\t%p\0' 2> /dev/null | sort -nrz | cut -f2 -z #| xargs -0 ls
 	         #"${any_find_type_restrict}"
 	         #2> /dev/null
