@@ -3,7 +3,7 @@
 #  https://github.com/acorbe/any/blob/master/LICENSE
 # for full license details.
 # Any is authored and maintained by Alessandro Corbetta.
-# Copyright (c) 2019 Alessandro Corbetta
+# Copyright (c) 2019-2020 Alessandro Corbetta
 
 if [ "$ANY_ALIAS_CD" = true ]; then
    alias ad='any cd'
@@ -85,7 +85,7 @@ function any_find_command () {
 
 	if [[ "$ANY_DEBUG" == true ]]; then
 	    >&2 echo "[ANY] - updated -maxdepth" $path_len_subelements
-	    >&2 echo "[ANY] - updated -path" "${joined_patternized_path}"
+	    >&2 echo "[ANY] - updated -ipath" "${joined_patternized_path}"
 	    >&2 echo "[ANY] - updated -iname" "*${path_split[$path_len_subelements-1]}*"
 	fi	
 	
@@ -97,7 +97,7 @@ function any_find_command () {
 	else
 	    if [[ "$ANY_DEBUG" == true ]]; then
 		>&2 echo "[ANY] - FIND CALL: find "-maxdepth $path_len_subelements \
-		 \( -path "${joined_patternized_path}" \) \
+		 \( -ipath "${joined_patternized_path}" \) \
 		 -iname "*${path_split[$path_len_subelements-1]}*" \
 		 -printf '%Ts\t%p\0'
 	    fi
@@ -132,15 +132,34 @@ function any_find_command () {
     fi    
 }
 
+function color_output_if_possible () {
+    case $TERM in
+	xterm-*)
+	    echo -e "\e[31m$1\033[0m"
+	    ;;
+	*)
+	    echo -e "$1"
+	    ;;
+    esac    
+}
+
+function color_output_if_possible_ignore_beg () {
+    case $TERM in
+	xterm-*)
+	    echo -e "$1 \e[31m$2\033[0m"
+	    ;;
+	*)
+	    echo -e "$1 $2"
+	    ;;
+    esac    
+}
 
 function any (){
 
-    #only portable way to transfer the last element of the array
-    for arg__ in $@; do :; done
+    #last argument encodes the keyword/pattern that any will try to match.
+    target_pattern=${@: -1} 
 
-    #this encodes the keyword/pattern that any will try to match
-    target_pattern=$arg__
-
+    #command that any aims at expanding.
     command_=$1
 
     if [[ "$ANY_DEBUG" == true ]]; then
@@ -233,7 +252,8 @@ function any (){
 	    ;;
 	1)
 	    target_file=${array[0]}
-	    echo -e "expanded to: \e[34m${@:1:$#-1} ${target_file}\033[0m"
+	    #echo -e "expanded to: \e[34m${@:1:$#-1} ${target_file}\033[0m"
+	    color_output_if_possible_ignore_beg "expanded to:" "$target_file"
 	    #Note that we escape spaces.
 	    eval ${@:1:$#-1} "${target_file// /\\ }" 
 	    ;;
@@ -244,10 +264,13 @@ function any (){
 	    do
 		if [ -z "$option_" ]
 		then
-		    echo -e "\e[31mSelection error. No expansion.\033[0m"
+		    #echo -e "\e[31mSelection error. No expansion.\033[0m"
+		    color_output_if_possible "Selection error. No expansion."
+		    
 		else
 		    target_file=$option_
-		    echo -e "expanded to: \e[34m${@:1:$#-1} $target_file\033[0m"
+		    #echo -e "expanded to: \e[34m${@:1:$#-1} $target_file\033[0m"
+		    color_output_if_possible_ignore_beg "expanded to:" "$target_file"
 		    #Note that we escape spaces.
 		    eval ${@:1:$#-1} "${target_file// /\\ }" 
 		fi
